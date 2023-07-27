@@ -6,11 +6,18 @@ const nextConfig = {
     config.experiments = {
       asyncWebAssembly: true,
       layers: true,
-    };
+    }
 
-    return config;
+    return config
   },
   // Add env { API_KEY: process.env.API_KEY}
-};
+  env: {
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    SERPAI_API_KEY: process.env.SERPAI_API_KEY,
+    PINECONE_API_KEY: process.env.PINECONE_API_KEY,
+    PINECONDE_ENV: process.env.PINECONDE_ENV,
+    PINECONE_INDEX: process.env.PINECONE_INDEX,
+  },
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
