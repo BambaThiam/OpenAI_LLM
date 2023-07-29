@@ -18,6 +18,8 @@ const Memory = () => {
     },
   ])
 
+  const [firstMsg, setFirstMsg] = useState(true)
+
   const handlePromptChange = (e) => {
     setPrompt(e.target.value)
   }
@@ -25,19 +27,34 @@ const Memory = () => {
   const handleSubmitPrompt = async () => {
     console.log('Sending', prompt)
     try {
+      // update the user message
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: prompt, type: 'user', sourceDocuments: null },
+      ])
       const response = await fetch('api/memory', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ input: prompt }),
+        body: JSON.stringify({ input: prompt, firstMsg: firstMsg }),
       })
       if (!response.ok) {
         throw new Error(`HTTP Error! Status: ${response.status}`)
       }
+
       setPrompt('')
+      // So we don't reinitialize the chain
+      setFirstMsg(false)
       const searchRes = await response.json()
+      // Add the bot message
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: searchRes.output.response, type: 'bot', sourceDocuments: null },
+      ])
       console.log({ searchRes })
+      // Clear any old error messages
+      setError('')
     } catch (err) {
       console.error(err)
       setError(err)
@@ -50,7 +67,7 @@ const Memory = () => {
         leftChildren={
           <>
             <PageHeader
-              heading="Je suis doué ai j'ai une bonne mémoire"
+              heading="Je suis doué et j'ai une bonne mémoire"
               boldText="Essayons si je peux me souvenir de notre meilleur projet et du résultat financier. Je suis capable de récuperer ces informations dans tout contenu dans un document PDF."
               description="Cet outil utilise la mémoire tampon et la chaîne de conversation. "
             />
