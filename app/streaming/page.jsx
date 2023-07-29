@@ -1,36 +1,68 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import PageHeader from "../components/PageHeader";
-import PromptBox from "../components/PromptBox";
-import ResultStreaming from "../components/ResultStreaming";
-import Title from "../components/Title";
-import TwoColumnLayout from "app/components/TwoColumnLayout";
+'use client'
+import React, { useState, useEffect } from 'react'
+import PageHeader from '../components/PageHeader'
+import PromptBox from '../components/PromptBox'
+import ResultStreaming from '../components/ResultStreaming'
+import Title from '../components/Title'
+import TwoColumnLayout from 'app/components/TwoColumnLayout'
 
 const Streaming = () => {
-  const [prompt, setPrompt] = useState("");
-  const [error, setError] = useState(null);
-  const [data, setData] = useState("");
+  const [prompt, setPrompt] = useState('')
+  const [error, setError] = useState(null)
+  const [data, setData] = useState('')
   //   add code
+  const [source, setSource] = useState(null)
 
   const processToken = (token) => {
     // add code
-    return;
-  };
+    return token.replace(/\\n/g, '\n').replace(/\"/g, '')
+  }
 
   const handlePromptChange = (e) => {
-    setPrompt(e.target.value);
-  };
+    setPrompt(e.target.value)
+  }
 
   const handleSubmit = async () => {
     try {
       //   add code
+      console.log(`sending ${prompt}`)
+      await fetch('/api/streaming', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input: prompt }),
+      })
+
+      //Close existing sources
+      if (source) {
+        source.close()
+      }
+      // create new eventsource
+      const newSource = new EventSource('/api/streaming')
+      setSource(newSource)
+      newSource.addEventListener('newToken', (event) => {
+        const token = processToken(event.data)
+        setData((prevData) => prevData + token)
+      })
+      newSource.addEventListener('end', () => {
+        newSource.close()
+      })
     } catch (err) {
-      console.error(err);
-      setError(error);
+      console.error(err)
+      setError(error)
     }
-  };
+  }
 
   // Clean up the EventSource on component unmount
+  useEffect(() => {
+    //stuff is gonna happen
+    return () => {
+      if (source) {
+        source.close()
+      }
+    }
+  }, [source])
   //   add code
   return (
     <>
@@ -52,7 +84,7 @@ const Streaming = () => {
               prompt={prompt}
               handlePromptChange={handlePromptChange}
               handleSubmit={handleSubmit}
-              placeHolderText={"Enter your name and city"}
+              placeHolderText={'Enter your name and city'}
               error={error}
               pngFile="pdf"
             />
@@ -60,7 +92,7 @@ const Streaming = () => {
         }
       />
     </>
-  );
-};
+  )
+}
 
-export default Streaming;
+export default Streaming

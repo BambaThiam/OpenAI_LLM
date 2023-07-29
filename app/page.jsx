@@ -1,6 +1,6 @@
-import Image from "next/image";
-import Gallery from "./components/Gallery";
-import { pressStart2P, sourceCodePro, instrumentSans } from "./styles/fonts";
+import Image from 'next/image'
+import Gallery from './components/Gallery'
+import { pressStart2P, sourceCodePro, instrumentSans } from './styles/fonts'
 
 export default function Home() {
   return (
@@ -19,9 +19,8 @@ export default function Home() {
             className={`w-full mt-6 max-w-2xl text-center text-lg leading-7 sm:text-2xl sm:leading-9 sm:text-left lg:text-3xl ${instrumentSans.className}`}
           >
             <span className="font-bold">
-              Throughout this course, you'll be building stunning AI projects
-              that are not only impressive but also have real-world
-              applications.
+              Stunning AI projects that are not only impressive but also have
+              real-world applications.
             </span>
             Whether you're aiming to generate a passive income, create a
             personal assistant to streamline your work, or simply to enhance
@@ -35,9 +34,9 @@ export default function Home() {
       <p
         className={`w-full mt-4 text-center text-10 leading-7 sm:text-2xl sm:leading-9 sm:text-center lg:text-3xl ${sourceCodePro.className}`}
       >
-        Remember, this journey is yours. So let's{" "}
-        <strong>roll up our sleeves, dive in, and start building</strong>. 🔨
+        Remember, that's just the{' '}
+        <strong>beginning, dive in, and start building</strong>. 🔨
       </p>
     </div>
-  );
+  )
 }
