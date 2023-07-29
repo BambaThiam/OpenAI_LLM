@@ -7,9 +7,16 @@ import Title from '../components/Title'
 import TwoColumnLayout from '../components/TwoColumnLayout'
 import ResultWithSources from '../components/ResultWithSources'
 import '../globals.css'
+
 const Memory = () => {
   const [prompt, setPrompt] = useState('')
   const [error, setError] = useState(null)
+  const [messages, setMessages] = useState([
+    {
+      text: 'Hello! Quel est votre meilleur projet et son résultat financier ?',
+      type: 'bot',
+    },
+  ])
 
   const handlePromptChange = (e) => {
     setPrompt(e.target.value)
@@ -17,6 +24,24 @@ const Memory = () => {
 
   const handleSubmitPrompt = async () => {
     console.log('Sending', prompt)
+    try {
+      const response = await fetch('api/memory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input: prompt }),
+      })
+      if (!response.ok) {
+        throw new Error(`HTTP Error! Status: ${response.status}`)
+      }
+      setPrompt('')
+      const searchRes = await response.json()
+      console.log({ searchRes })
+    } catch (err) {
+      console.error(err)
+      setError(err)
+    }
   }
   return (
     <>
@@ -33,7 +58,7 @@ const Memory = () => {
         }
         rightChildren={
           <>
-            <ResultWithSources messages={[]} pngFile="brain" />
+            <ResultWithSources messages={messages} pngFile="brain" />
             <PromptBox
               prompt={prompt}
               handleSubmit={handleSubmitPrompt}
