@@ -10,6 +10,7 @@ const Emoji = ({ color }) => {
       ) : (
         <p>"Ce n'est pa du bleu</p>
       )}
+      <p>🤖</p>
     </div>
   )
 }
